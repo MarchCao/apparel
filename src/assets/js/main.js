@@ -29,8 +29,7 @@
 
   // Contact form -> server-side API (Cloudflare Worker + Resend).
   // The API key lives only as a Worker secret; the frontend only knows the endpoint URL.
-  // __INQUIRY_ENDPOINT__ is replaced with the real Worker URL after deploy.
-  var INQUIRY_ENDPOINT = "__INQUIRY_ENDPOINT__";
+  var INQUIRY_ENDPOINT = "https://haice-apparel-inquiry.junhcao.workers.dev/api/inquiry";
   var form = document.getElementById("inquiryForm");
   if (form) {
     var statusEl = document.getElementById("formStatus");
@@ -64,10 +63,11 @@
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
       }).then(function(res){
-        return res.json().then(function(data){ return { ok: res.ok && data && data.ok }; });
+        return res.json().then(function(data){ return { ok: res.ok && data && data.ok, autoReply: data && data.autoReply }; });
       }).then(function(r){
         if (r.ok) {
-          setStatus("success", S.success || "Sent.");
+          // autoReply === false: inquiry reached us, but the confirmation email failed.
+          setStatus("success", (r.autoReply === false ? (S.partial || S.success) : S.success) || "Sent.");
           form.reset();
         } else {
           setStatus("error", S.error || "Failed to send.");
