@@ -117,8 +117,9 @@
             <textarea id="f-message" name="message" required></textarea>
           </div>
           <div class="attach-note">ファイル（JPG / PNG / PDF / ZIP、各10MBまで）は、メールに添付してお送りください：sales@haice.top</div>
-          <button class="btn btn-primary" type="submit">メールソフトで送信内容を開く</button>
-          <p class="form-note" style="margin-top:12px">送信ボタンを押すと、お使いのメールソフトが起動し、入力内容が sales@haice.top 宛のメールとして作成されます。</p>
+          <button class="btn btn-primary" type="submit" id="submitBtn">メールソフトで送信内容を開く</button>
+          <div id="formStatus" class="form-status" role="status" aria-live="polite"></div>
+          <p class="form-note" style="margin-top:12px">送信ボタンを押すと、お問い合わせ内容が送信されます。</p>
         </form>
       </div>
     </div>
@@ -136,6 +137,12 @@ window.FORM_LABELS = {
   delivery: "希望納期",
   message: "お問い合わせ内容",
   subject_prefix: "お問い合わせ"
+};
+window.FORM_STATUS = {
+  sending: "送信中…",
+  success: "お問い合わせを受け付けました。確認メールをお送りしましたのでご確認ください。",
+  error: "送信に失敗しました。お手数ですが、sales@haice.top まで直接メールでお問い合わせください。",
+  partial: "お問い合わせは受け付けましたが、確認メールの送信に失敗しました。こちらから改めてご連絡いたします。お急ぎの場合は sales@haice.top まで直接メールでお問い合わせください。"
 };
 </script>
 

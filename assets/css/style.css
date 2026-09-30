@@ -119,6 +119,11 @@ body.nav-open .main-nav a.active{color:var(--brand);border-left:4px solid var(--
 .field-row{display:grid;gap:18px;grid-template-columns:1fr}
 .hp{position:absolute;left:-9999px;opacity:0;height:0;width:0}
 .form-note{font-size:14px;color:var(--muted)}
+.form-status{font-size:15px;margin-top:12px;min-height:1.4em;font-weight:600}
+.form-status.is-sending{color:var(--muted)}
+.form-status.is-success{color:#1a7a3c}
+.form-status.is-error{color:#b3261e}
+.btn:disabled{opacity:.6;cursor:wait}
 .attach-note{background:var(--bg-soft);border:1px dashed var(--line);border-radius:var(--radius);padding:16px 20px;font-size:14px;color:var(--ink-soft);margin:18px 0}
 
 /* CTA band */

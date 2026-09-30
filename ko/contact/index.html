@@ -117,8 +117,9 @@
             <textarea id="f-message" name="message" required></textarea>
           </div>
           <div class="attach-note">파일(JPG / PNG / PDF / ZIP, 각 10MB 이하)은 이메일 첨부로 sales@haice.top 앞으로 보내 주세요.</div>
-          <button class="btn btn-primary" type="submit">이메일 앱에서 열기</button>
-          <p class="form-note" style="margin-top:12px">보내기를 누르면 이메일 앱이 열리며 sales@haice.top 앞으로 메일이 작성됩니다.</p>
+          <button class="btn btn-primary" type="submit" id="submitBtn">이메일 앱에서 열기</button>
+          <div id="formStatus" class="form-status" role="status" aria-live="polite"></div>
+          <p class="form-note" style="margin-top:12px">보내기를 누르면 문의 내용이 전송됩니다.</p>
         </form>
       </div>
     </div>
@@ -136,6 +137,12 @@ window.FORM_LABELS = {
   delivery: "희망 납기",
   message: "문의 내용",
   subject_prefix: "문의"
+};
+window.FORM_STATUS = {
+  sending: "전송 중…",
+  success: "문의를 접수했습니다. 확인 메일을 보내드렸으니 확인해 주세요.",
+  error: "전송에 실패했습니다. sales@haice.top 으로 직접 메일을 보내 주세요.",
+  partial: "문의는 접수되었으나 확인 메일 전송에 실패했습니다. 곧 연락드리겠습니다. 급하신 경우 sales@haice.top 으로 직접 메일을 보내 주세요."
 };
 </script>
 

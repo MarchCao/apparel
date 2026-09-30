@@ -117,8 +117,9 @@
             <textarea id="f-message" name="message" required></textarea>
           </div>
           <div class="attach-note">Please email files (JPG / PNG / PDF / ZIP, up to 10MB each) to sales@haice.top.</div>
-          <button class="btn btn-primary" type="submit">Open in your email app</button>
-          <p class="form-note" style="margin-top:12px">Clicking send opens your email app with your message addressed to sales@haice.top.</p>
+          <button class="btn btn-primary" type="submit" id="submitBtn">Open in your email app</button>
+          <div id="formStatus" class="form-status" role="status" aria-live="polite"></div>
+          <p class="form-note" style="margin-top:12px">Clicking send submits your inquiry to us.</p>
         </form>
       </div>
     </div>
@@ -136,6 +137,12 @@ window.FORM_LABELS = {
   delivery: "Target Delivery Date",
   message: "Message",
   subject_prefix: "Inquiry"
+};
+window.FORM_STATUS = {
+  sending: "Sending…",
+  success: "We've received your inquiry and sent a confirmation email to your address.",
+  error: "Failed to send. Please email us directly at sales@haice.top.",
+  partial: "We've received your inquiry, but the confirmation email could not be sent. We'll contact you shortly. If urgent, please email us directly at sales@haice.top."
 };
 </script>
 

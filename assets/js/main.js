@@ -27,35 +27,56 @@
   var y = document.getElementById("year");
   if (y) y.textContent = new Date().getFullYear();
 
-  // Contact form -> mailto (Phase 1: no server backend)
+  // Contact form -> server-side API (Cloudflare Worker + Resend).
+  // The API key lives only as a Worker secret; the frontend only knows the endpoint URL.
+  var INQUIRY_ENDPOINT = "https://haice-apparel-inquiry.junhcao.workers.dev/api/inquiry";
   var form = document.getElementById("inquiryForm");
   if (form) {
+    var statusEl = document.getElementById("formStatus");
+    var submitBtn = document.getElementById("submitBtn");
+    var S = window.FORM_STATUS || {};
+    var setStatus = function(kind, text){
+      if (!statusEl) return;
+      statusEl.className = "form-status" + (kind ? " is-"+kind : "");
+      statusEl.textContent = text || "";
+    };
     form.addEventListener("submit", function(e){
       e.preventDefault();
       // Honeypot
       if (form.querySelector(".hp input").value) return;
+      if (!form.checkValidity()) { form.reportValidity(); return; }
       var v = function(name){
         var el = form.querySelector('[name="'+name+'"]');
         return el ? el.value.trim() : "";
       };
-      var L = window.FORM_LABELS || {};
-      var lines = [
-        (L.name||"Name")+": "+v("name"),
-        (L.company||"Company")+": "+v("company"),
-        (L.email||"Email")+": "+v("email"),
-        (L.country||"Country / Region")+": "+v("country"),
-        (L.category||"Product Category")+": "+v("category"),
-        (L.type||"OEM / ODM")+": "+v("type"),
-        (L.quantity||"Estimated Quantity")+": "+v("quantity"),
-        (L.delivery||"Target Delivery Date")+": "+v("delivery"),
-        "",
-        (L.message||"Message")+":",
-        v("message")
-      ];
-      var subject = "[HAICE Apparel] " + ((L.subject_prefix||"Inquiry from")+" ") + (v("company") || v("name"));
-      var href = "mailto:sales@haice.top?subject="+encodeURIComponent(subject)
-               + "&body="+encodeURIComponent(lines.join("\n"));
-      window.location.href = href;
+      var payload = {
+        name: v("name"), company: v("company"), email: v("email"),
+        country: v("country"), category: v("category"), type: v("type"),
+        quantity: v("quantity"), delivery: v("delivery"),
+        message: v("message"), website: "",
+        lang: document.body.getAttribute("data-lang") || "en"
+      };
+      if (submitBtn) submitBtn.disabled = true;
+      setStatus("sending", S.sending || "Sending\u2026");
+      fetch(INQUIRY_ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      }).then(function(res){
+        return res.json().then(function(data){ return { ok: res.ok && data && data.ok, autoReply: data && data.autoReply }; });
+      }).then(function(r){
+        if (r.ok) {
+          // autoReply === false: inquiry reached us, but the confirmation email failed.
+          setStatus("success", (r.autoReply === false ? (S.partial || S.success) : S.success) || "Sent.");
+          form.reset();
+        } else {
+          setStatus("error", S.error || "Failed to send.");
+        }
+      }).catch(function(){
+        setStatus("error", S.error || "Failed to send.");
+      }).then(function(){
+        if (submitBtn) submitBtn.disabled = false;
+      });
     });
   }
 })();
