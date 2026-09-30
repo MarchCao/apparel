@@ -65,7 +65,8 @@
             <textarea id="f-message" name="message" required></textarea>
           </div>
           <div class="attach-note">{{t.contact.attach_note}}</div>
-          <button class="btn btn-primary" type="submit">{{t.contact.submit}}</button>
+          <button class="btn btn-primary" type="submit" id="submitBtn">{{t.contact.submit}}</button>
+          <div id="formStatus" class="form-status" role="status" aria-live="polite"></div>
           <p class="form-note" style="margin-top:12px">{{t.contact.form_note}}</p>
         </form>
       </div>
@@ -84,5 +85,10 @@ window.FORM_LABELS = {
   delivery: "{{t.contact.f_delivery}}",
   message: "{{t.contact.f_message}}",
   subject_prefix: "{{t.contact.subject_prefix}}"
+};
+window.FORM_STATUS = {
+  sending: "{{t.contact.sending}}",
+  success: "{{t.contact.success_text}}",
+  error: "{{t.contact.error_text}}"
 };
 </script>
