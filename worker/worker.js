@@ -101,11 +101,20 @@ async function resendSend(env, { from, to, subject, text, replyTo }) {
       Authorization: `Bearer ${env.RESEND_API_KEY}`,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ from, to: [to], subject, text, reply_to: replyTo }),
+    body: JSON.stringify({ from, to: Array.isArray(to) ? to : [to], subject, text, reply_to: replyTo }),
   });
   const data = await r.json().catch(() => ({}));
   if (!r.ok) throw new Error(`resend ${r.status}: ${data.message || JSON.stringify(data).slice(0, 200)}`);
   return data;
+}
+
+// INQUIRY_TO supports comma-separated multiple recipients, e.g.
+// "sales@haice.top, backup@example.com". Tencent exmail silently drops
+// Resend mail to sales@haice.top (confirmed again 2026-10-12: inquiry
+// never arrived, auto-reply to 163 did), so a backup address guarantees
+// no lost inquiry.
+function parseRecipients(v) {
+  return String(v || "sales@haice.top").split(",").map((s) => s.trim()).filter(Boolean);
 }
 
 function cors(origin) {
@@ -166,20 +175,22 @@ export default {
     }
 
     const from = env.FROM_EMAIL || "HAICE Apparel <sales@haice.top>";
-    const to = env.INQUIRY_TO || "sales@haice.top";
+    const toList = parseRecipients(env.INQUIRY_TO);
 
     try {
       const inquiry = buildInquiryEmail(d, lang, { time: new Date().toISOString(), ip });
-      await resendSend(env, { from, to, subject: inquiry.subject, text: inquiry.text, replyTo: str(d.email, 254) });
+      await resendSend(env, { from, to: toList, subject: inquiry.subject, text: inquiry.text, replyTo: str(d.email, 254) });
     } catch (e) {
+      console.error("Resend inquiry error:", e);
       return json({ ok: false, error: "send_failed" }, 502, origin);
     }
 
     try {
       const auto = buildAutoReply(d, lang);
-      await resendSend(env, { from, to: str(d.email, 254), subject: auto.subject, text: auto.text, replyTo: to });
+      await resendSend(env, { from, to: str(d.email, 254), subject: auto.subject, text: auto.text, replyTo: toList[0] });
     } catch (e) {
       // inquiry already delivered; auto-reply failure is non-fatal
+      console.error("Resend auto-reply error:", e);
       return json({ ok: true, autoReply: false }, 200, origin);
     }
     return json({ ok: true }, 200, origin);

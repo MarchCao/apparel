@@ -5,7 +5,10 @@ compatibility_date = "2026-09-30"
 # Non-secret config (visible in dashboard; fine to commit)
 [vars]
 FROM_EMAIL = "HAICE Apparel <sales@haice.top>"
-INQUIRY_TO = "sales@haice.top"
+# Dual recipients: Tencent exmail silently drops Resend mail to
+# sales@haice.top (confirmed 2026-10-12); the 163 copy is the backup
+# that guarantees inquiries are not lost.
+INQUIRY_TO = "sales@haice.top, junhcao@163.com"
 
 # Secrets (NEVER commit — set via CLI):
 #   wrangler secret put RESEND_API_KEY
