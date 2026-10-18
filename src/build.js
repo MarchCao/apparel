@@ -4,7 +4,7 @@ const path = require('path');
 
 const SRC = path.join(__dirname);
 const DIST = path.join(__dirname, '..', 'dist');
-const DOMAIN = 'https://apparel.haice.top';
+const DOMAIN = 'https://apparel.haicechina.com';
 
 const LANGS = [
   { code: 'ja', og: 'ja_JP', name: '日本語' },
@@ -146,8 +146,8 @@ fs.copyFileSync(path.join(SRC, 'templates', '404.html'), path.join(DIST, '404.ht
 
 // robots.txt, CNAME
 writeFile(path.join(DIST, 'robots.txt'),
-  'User-agent: *\nAllow: /\n\nSitemap: https://apparel.haice.top/sitemap.xml\n');
-writeFile(path.join(DIST, 'CNAME'), 'apparel.haice.top\n');
+  'User-agent: *\nAllow: /\n\nSitemap: https://apparel.haicechina.com/sitemap.xml\n');
+writeFile(path.join(DIST, 'CNAME'), 'apparel.haicechina.com\n');
 
 // sitemap.xml with hreflang alternates
 const urlEntries = sitemapUrls.map(u => {
